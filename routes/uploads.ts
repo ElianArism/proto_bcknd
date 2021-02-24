@@ -4,9 +4,11 @@ import fileUpload from 'express-fileupload';
 import { uploadImg } from '../controllers/uploads';
 import validateJWT from '../middlewares/validate-jwt';
 
-export const uploadRoutes = Router();
+const uploadRoutes = Router();
 
 uploadRoutes.use(fileUpload()); 
 
-uploadRoutes.post('/uploads/:id', validateJWT, uploadImg); 
+uploadRoutes.put('/uploads/:id', validateJWT, uploadImg); 
 // uploadRoutes.put('/uploads', generateJWT, changeClothesImage); 
+
+export default uploadRoutes;

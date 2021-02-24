@@ -12,14 +12,12 @@ typesRoutes.get('/types', getTypes);
 typesRoutes.post('/types', [
     validateJWT, 
     check('type', 'El campo type es obligatorio').not().isEmpty(), 
-    check('sex', 'El campo de sexo es obligatorio').not().isEmpty(),
     validateFields
 ], addType);
 
 typesRoutes.put('/types/:id', [
     validateJWT, 
     check('type', 'El campo type es obligatorio').not().isEmpty(), 
-    check('sex', 'El campo de sexo es obligatorio').not().isEmpty(),
     validateFields
 ], updateType); 
 

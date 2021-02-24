@@ -6,7 +6,7 @@ import validateFields from '../middlewares/validate-fields';
 import { addSizes, updateSizes, getSizes, deleteSizes } from '../controllers/sizes';
 import validateJWT from '../middlewares/validate-jwt';
 
-export const sizesRoutes = Router();
+const sizesRoutes = Router();
 
 sizesRoutes.get('/sizes', getSizes);
 
@@ -23,3 +23,5 @@ sizesRoutes.put('/sizes/:id', [
 ], updateSizes);
 
 sizesRoutes.delete('/sizes/:id', validateJWT, deleteSizes);
+
+export default sizesRoutes;

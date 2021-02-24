@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 import validateFields from '../middlewares/validate-fields';
-import { addClothes, updateClothes, getClothes, deleteClothes, deactivateOrActivateClothes } from '../controllers/clothes';
+import { addClothes, updateClothes, getClothes, deleteClothes, deactivateOrActivateClothes, getOne } from '../controllers/clothes';
 import validateJWT from '../middlewares/validate-jwt';
-export const clothesRoutes = Router();
 
+const clothesRoutes = Router();
 
 clothesRoutes.get('/clothes', getClothes); 
+
+clothesRoutes.get('/clothes/:id', getOne);
 
 clothesRoutes.post('/clothes', [
     check('brand', 'Este campo es obligatorio'),
@@ -19,7 +21,7 @@ clothesRoutes.post('/clothes', [
     validateJWT
 ], addClothes);
 
-clothesRoutes.put('/clothes', [
+clothesRoutes.put('/clothes/:id', [
     check('brand', 'Este campo es obligatorio'),
     check('type', 'Este campo es obligatorio'),
     check('gender', 'Este campo es obligatorio'),
@@ -30,6 +32,9 @@ clothesRoutes.put('/clothes', [
     validateJWT
 ], updateClothes); 
 
-clothesRoutes.put('/activate-clothes', validateJWT, deactivateOrActivateClothes);
+clothesRoutes.put('/clothes/activate-clothes/:id', validateJWT, deactivateOrActivateClothes);
 
-clothesRoutes.delete('/clothes', validateJWT, deleteClothes)
+clothesRoutes.delete('/clothes/:id', validateJWT, deleteClothes)
+
+
+export default clothesRoutes;

@@ -40,23 +40,49 @@ export const updateClothes = async (req: Request, res: Response) => {
 }
 
 export const getClothes = async (req: Request, res: Response) => {
-    const since = req.query.since || 0; 
-    const until = 15;
+    const since = Number(req.query.since) || 0; 
+    const until = 7;
     try {
-        const clothes = await 
+        const [clothes, total] = await Promise.all([
             ClothesModel
-                        .find()
-                        .skip(since) 
-                        .limit(until)
-                        .populate('brand', 'name')
-                        .populate('type', 'type sex')
-                        .populate('sizes', 'size avaible')
+                .find()
+                .skip(since) 
+                .limit(until)
+                .populate('brand', 'name')
+                .populate('type', 'type sex')
+                .populate('sizes', 'size avaible'), 
+            ClothesModel.count()
+        ]);
 
         return res.json({
             ok: true, 
-            clothes
+            clothes, 
+            total
         });
 
+    } catch (error) { internalSvError(res, error); }
+}
+
+export const getOne = async (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    try {
+        const clothesDB = await 
+            ClothesModel
+                .findById(id)
+                .populate('brand', 'name')
+                .populate('type', 'type sex')
+                .populate('sizes', 'size avaible')
+        
+        if(!clothesDB) {
+            errResponse('No se encontro la prenda', 404, res, null);
+        }
+
+        return res.json({
+            ok: true,
+            clothesDB
+        });
+        
     } catch (error) { internalSvError(res, error); }
 }
 
@@ -81,7 +107,7 @@ export const deactivateOrActivateClothes = async (req: Request, res: Response) =
     
         } catch (error) { internalSvError(res, error); }
     }
-}
+}   
 
 export const deleteClothes = async (req: Request, res: Response) => {
     const id: string = req.params.id; 

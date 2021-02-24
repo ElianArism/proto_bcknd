@@ -8,11 +8,12 @@ import Cloudinary from './cloudinary/cloudinary';
 import express from 'express';
 import authRoutes from './routes/auth';
 import enviromentVars from './enviroment.vars';
-import { clothesRoutes } from './routes/clothes';
-import { sizesRoutes } from './routes/sizes';
-import { uploadRoutes } from './routes/uploads';
+import clothesRoutes from './routes/clothes';
+import sizesRoutes from './routes/sizes';
+import uploadRoutes from './routes/uploads';
 import brandRoutes from './routes/brand';
 import typesRoutes from './routes/type';
+import searchEngineRoutes from './routes/searchEngine ';
 
 const sv = Server.initInstance(Number(enviromentVars.PORT)); 
 
@@ -25,6 +26,7 @@ sv.app.use('/api', brandRoutes);
 sv.app.use('/api', typesRoutes);
 sv.app.use('/api', sizesRoutes);
 sv.app.use('/api', uploadRoutes);
+sv.app.use('/api', searchEngineRoutes);
 
 const db = Database.initDB();
 db.connectDB(enviromentVars.DB_CONN);

@@ -11,7 +11,7 @@ export const uploadImg = async (req: Request, res: Response) => {
     const clothes: IClothes = await ClothesModel.findById(clothesId);
 
     if(!clothes) {
-        errResponse('No se encontro una prenda con este id', 400, res, null); 
+        errResponse('No se encontro una prenda con este id', 404, res, null); 
     } 
 
     if(!req.files || Object.keys(req.files).length === 0) {
@@ -41,7 +41,7 @@ export const uploadImg = async (req: Request, res: Response) => {
             internalSvError(res, err);
         } else {
             try {
-                let {ok, path, public_id} = await Cloudinary.uploadFile(pathImg, {folder: `${clothes.type}`});
+                let {ok, path, public_id} = await Cloudinary.uploadFile(pathImg, {folder: `${clothes.type.type}`});
 
                 if(!ok) {
                     errResponse('Ocurrio un error al subir la img al servidor remoto', 500, res, null);
@@ -52,8 +52,10 @@ export const uploadImg = async (req: Request, res: Response) => {
 
                     // delete previous img 
                     await Cloudinary.deleteFile(clothes.img.public_id);
+
                     // add new img
                     const img = {public_id, path: path};
+                    
                     const updateClothes = await ClothesModel.findByIdAndUpdate(clothesId, {img});
                     
                     // eliminar contenido de uploads para liberar el espacio en el sv
