@@ -1,0 +1,53 @@
+/* Global CSS Files */
+:root {
+    --bg-color: #f16363;
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+input, button {
+    outline: none;  
+}
+body {
+    background-color: #f1f8ff;
+    height: 100vh;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select: none;
+}
+.fadeIn {
+    animation-duration: 300ms;
+    animation-name: fadeIn;
+    animation-fill-mode: forwards;
+    opacity: 0;
+}
+.fadeOut {
+    animation-duration: 300ms;
+    animation-name: fadeOut;
+    animation-fill-mode: forwards;
+    opacity: 0;
+    
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/*# sourceMappingURL=styles.css.map*/

@@ -47,6 +47,7 @@ const ClothesSchema: Schema = new Schema({
 }, {collection: 'prendas'});
 
 export interface IClothes extends Document {
+    _id?: string;
     img: any; 
     name: string;
     brand: IBrand; 

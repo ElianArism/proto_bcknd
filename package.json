@@ -7,7 +7,8 @@
     "lint": "tslint --project .",
     "build": "tsc",
     "serve": "ts-node index.ts",
-    "start": "nodemon"
+    "start": "ts-node index.ts",
+    "start:dev": "nodemon"
   },
   "author": "Elian Arismendi",
   "license": "ISC",
@@ -34,6 +35,7 @@
     "express": "^4.16.4",
     "express-validator": "^6.9.2",
     "jsonwebtoken": "^8.5.1",
+    "mercadopago": "^1.5.5",
     "mongoose": "^5.11.12",
     "nodemailer": "^6.4.17",
     "uuid": "^8.3.2"

@@ -63,6 +63,37 @@ export const getClothes = async (req: Request, res: Response) => {
     } catch (error) { internalSvError(res, error); }
 }
 
+export const getClothes4Sex = async (req: Request, res: Response) => {
+    const sex = req.params.sex; 
+    const since = Number(req.query.since) || 0; 
+    const until = 7; 
+    try {
+        let clothesDB; 
+        let total;
+
+        [clothesDB, total] = await Promise.all([
+            ClothesModel
+                .find({gender: [sex], active: true})
+                .skip(since) 
+                .limit(until)
+                .populate('brand', 'name')
+                .populate('type', 'type sex')
+                .populate('sizes', 'size avaible'), 
+                
+            ClothesModel    
+                .count({gender: [sex], active: true})
+        ]);
+        
+
+        return res.json({
+            ok: true, 
+            clothesDB, 
+            total
+        });
+
+    } catch (error) { internalSvError(res, error); }
+}
+
 export const getOne = async (req: Request, res: Response) => {
     const id = req.params.id;
 
@@ -71,7 +102,7 @@ export const getOne = async (req: Request, res: Response) => {
             ClothesModel
                 .findById(id)
                 .populate('brand', 'name')
-                .populate('type', 'type sex')
+                .populate('type', 'type')
                 .populate('sizes', 'size avaible')
         
         if(!clothesDB) {
