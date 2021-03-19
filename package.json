@@ -10,6 +10,9 @@
     "start": "ts-node index.ts",
     "start:dev": "nodemon"
   },
+  "engines": {
+    "node": "14.15.5"
+  },
   "author": "Elian Arismendi",
   "license": "ISC",
   "devDependencies": {
