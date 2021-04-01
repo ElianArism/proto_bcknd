@@ -8,6 +8,14 @@ export const addClothes = async (req: Request, res: Response) => {
     const newClothes: IClothes = new ClothesModel(req.body); 
     
     try {
+        let i = 0;
+        newClothes.sizes.forEach(size => {
+            if(size.stock > 0) {
+                i++; 
+            }
+        });
+        if(i <= 0) newClothes.active = false;  
+
         const clothesBD = await newClothes.save();
 
         return res.json({
@@ -21,13 +29,26 @@ export const addClothes = async (req: Request, res: Response) => {
 export const updateClothes = async (req: Request, res: Response) => {
     const data: IClothes = req.body;
     const id: string = req.params.id;
-
-    const clothes = await ClothesModel.findById(id);
+    let clothes;
+    try {
+      clothes = await ClothesModel.findById(id);
+        
+    } catch (error) { internalSvError(res, error) }
     
     if(!clothes) {
         return errResponse('No se encontro ropa con ese id', 404, res, null);
     } else {
         try {
+            let i = 0;
+            data.sizes.forEach(size => {
+                if(Number(size.stock) > 0) {
+                    i = i + 1; 
+                }
+            });
+            if(i <= 0) {
+                data.active = false;
+            }
+
             const clothesUpdate: IClothes =  await ClothesModel.findByIdAndUpdate(id, data, {new: true});
             
             return res.json({
@@ -49,9 +70,9 @@ export const getClothes = async (req: Request, res: Response) => {
                 .skip(since) 
                 .limit(until)
                 .populate('brand', 'name')
-                .populate('type', 'type sex')
-                .populate('sizes', 'size avaible'), 
-            ClothesModel.count()
+                .populate('type', 'type')
+                .populate({path:'sizes', populate:{path: 'size'}}),
+            ClothesModel.countDocuments()
         ]);
 
         return res.json({
@@ -59,7 +80,7 @@ export const getClothes = async (req: Request, res: Response) => {
             clothes, 
             total
         });
-
+ 
     } catch (error) { internalSvError(res, error); }
 }
 
@@ -77,14 +98,13 @@ export const getClothes4Sex = async (req: Request, res: Response) => {
                 .skip(since) 
                 .limit(until)
                 .populate('brand', 'name')
-                .populate('type', 'type sex')
-                .populate('sizes', 'size avaible'), 
+                .populate('type', 'type')
+                .populate({path:'sizes', populate:{path: 'size'}}),
                 
             ClothesModel    
-                .count({gender: [sex], active: true})
+                .countDocuments({gender: [sex], active: true})
         ]);
         
-
         return res.json({
             ok: true, 
             clothesDB, 
@@ -99,12 +119,12 @@ export const getOne = async (req: Request, res: Response) => {
 
     try {
         const clothesDB = await 
-            ClothesModel
-                .findById(id)
-                .populate('brand', 'name')
-                .populate('type', 'type')
-                .populate('sizes', 'size avaible')
-        
+        ClothesModel
+            .findById(id)
+            .populate('brand', 'name')
+            .populate('type', 'type')
+            .populate({path:'sizes', populate:{path: 'size'}})
+    
         if(!clothesDB) {
             errResponse('No se encontro la prenda', 404, res, null);
         }
@@ -156,4 +176,28 @@ export const deleteClothes = async (req: Request, res: Response) => {
             });
         } catch (error) { internalSvError(res, error); }
     }
+}
+
+export const setStock = async (req: Request, res: Response) => {
+    const id = req.params.id; 
+    const {stock, size} = req.body;
+    try {
+        const clothesDB = await 
+            ClothesModel.findById(id)
+                .populate({path:'sizes', populate:{path: 'size'}}); 
+        
+        clothesDB.sizes = clothesDB.sizes.map((currentSize: any) => {
+            if(currentSize.size.size === size) {
+                currentSize.stock = stock; 
+            }
+            return currentSize; 
+        });
+
+        
+        const updateClothesDB = await ClothesModel.findByIdAndUpdate(id, clothesDB, {new: true}); 
+        return res.json({
+            ok: true, 
+            updateClothesDB
+        });
+    } catch (error) { internalSvError(res, error); }
 }

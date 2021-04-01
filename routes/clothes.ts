@@ -1,7 +1,16 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 import validateFields from '../middlewares/validate-fields';
-import { addClothes, updateClothes, getClothes, deleteClothes, deactivateOrActivateClothes, getOne, getClothes4Sex } from '../controllers/clothes';
+import { 
+    addClothes, 
+    updateClothes, 
+    getClothes, 
+    deleteClothes, 
+    deactivateOrActivateClothes, 
+    getOne, 
+    getClothes4Sex, 
+    setStock 
+} from '../controllers/clothes';
 import validateJWT from '../middlewares/validate-jwt';
 
 const clothesRoutes = Router();
@@ -35,6 +44,12 @@ clothesRoutes.put('/clothes/:id', [
 ], updateClothes); 
 
 clothesRoutes.put('/clothes/activate-clothes/:id', validateJWT, deactivateOrActivateClothes);
+
+clothesRoutes.put('/clothes/setstock/:id', [
+    check('stock', 'Este campo es obligatorio'),
+    check('size', 'Este campo es obligatorio'),
+    validateFields
+], setStock);
 
 clothesRoutes.delete('/clothes/:id', validateJWT, deleteClothes)
 

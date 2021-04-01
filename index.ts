@@ -1,4 +1,5 @@
 import dotenv = require('dotenv');
+import path = require('path'); 
 dotenv.config();
 
 import cors = require('cors');
@@ -36,6 +37,10 @@ db.connectDB(enviromentVars.DB_CONN);
 const cloudinary = Cloudinary.initCloudinary();
 
 sv.app.use(express.static('public'));
+
+sv.app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public/index.html'));
+});
 
 sv.startServer(() => {
     console.log('Servidor corriendo en el puerto ', enviromentVars.PORT);

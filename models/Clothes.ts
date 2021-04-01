@@ -1,5 +1,5 @@
 import { Schema, Model, model, Document} from 'mongoose';
-import { ISize } from './Size';
+import { ISize, SizeModel } from './Size';
 import { IBrand } from './Brand';
 import { IType } from './Type';
 
@@ -27,14 +27,16 @@ const ClothesSchema: Schema = new Schema({
         type: String, 
         required: true
     }],
-    stock: {
-        type: Number, 
-        required: true
-    },
     sizes: [{
-        require: true, 
-        type: Schema.Types.ObjectId,
-        ref: 'Size'
+        stock: {
+            type: Number, 
+            default: 0
+        },
+        size: {
+            require: true, 
+            type: Schema.Types.ObjectId,
+            ref: 'Size'
+        }
     }], 
     price: {
         type: Number,
@@ -53,8 +55,7 @@ export interface IClothes extends Document {
     brand: IBrand; 
     type: IType;
     gender: string[];
-    stock: number;
-    sizes: ISize[];
+    sizes: {stock: number, size: ISize}[];
     price: number;
     active: boolean;
 }

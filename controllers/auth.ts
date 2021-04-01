@@ -112,7 +112,7 @@ export const recoverPassowrd = async (req: Request, res: Response) => {
 
     try {
         const user: IAdminUser = await AdminModel.findOne({email});
-        
+        console.log(user);   
         if(!user) {
             errResponse('No se encontro una cuenta que coincida con el email ingresado', 404, res , null);
         }
